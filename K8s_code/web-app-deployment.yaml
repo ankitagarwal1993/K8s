@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-app-deployment
+  namespace: default
+  labels:
+    app: ui-web-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ui-web-app
+  template:
+    metadata:
+      name: ui-web-app
+      labels:
+        app: ui-web-app
+    spec:        
+      containers:
+        - name: web-app-deployment
+          image: agankit04/web-ui-app
+          ports:
+            - containerPort: 8080
+      imagePullSecrets:
+        - name: docker-login
