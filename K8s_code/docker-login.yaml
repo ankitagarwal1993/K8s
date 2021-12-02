@@ -1,0 +1,9 @@
+apiVersion: v1
+# some part of .dockerconfigjson is removed, since this is a public repo
+data:
+  .dockerconfigjson: tpdGFnZzk5M0BnbWFpbC5jb20iLCJhdXRoIjoiWVdkaGJtdHBkREEwT2xGM1pYSjBlVUZ1YTNWQU1USXoifX19
+kind: Secret
+metadata:
+  name: docker-login
+  namespace: default
+type: kubernetes.io/dockerconfigjson
