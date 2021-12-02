@@ -1,7 +1,7 @@
 # K8s
-This repo contains demo to: <br />
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.  Containerizing this app using "dockerfile". <br />
- &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.  Creating K8s manifest file Secret, Deployment and Service to showcase the orchestration of conatiner <br />
+The files demonstrate <br />
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1.  Containerizing the app using "dockerfile". <br />
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.  Creating K8s manifest file Secret, Deployment and Service to showcase the orchestration of container <br />
 <br />       
 <b>Containerization using Docker</b><br />
 A file named Dockerfile with no extenion will be created and the image will be pushed to docker hub registery<br />
