@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "microservice-angular-chart.fullname" . }}-{{ include .Values.image.uiImage . }}-deploy
+  labels:
+    {{- include "microservice-angular-chart.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{ include "microservice-angular-chart.fullname" . }}-{{ include .Values.image.uiImage .}}-prod
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "microservice-angular-chart.selectorLabels" . | nindent 8 }}
+        name: {{ include "microservice-angular-chart.fullname" . }}-{{ include .Values.image.uiImage .}}-prod
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "microservice-angular-chart.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.uiImage}}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 4200
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.application.uideploymentApp.service.name }}-Service
+  labels:    
+    name: {{ .Values.application.uideploymentApp.service.name }}
+    app: {{ .Values.applicationName }}
+    {{- include "microservice-angular-chart.selectorLabels" . | nindent 4 }}
+spec:
+  {{- with .Values.application.uideploymentApp.service }}
+  ports:
+    - port: {{ .containerPort }}
+      targetPort: {{.targetPort}}
+  {{- end}}    
+  selector:
+    name: {{ include "microservice-angular-chart.fullname" . }}-prod
+    app: {{ .Values.applicationName }}
+    {{- include "microservice-angular-chart.selectorLabels" . | nindent 4 }}      
