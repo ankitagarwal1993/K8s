@@ -1,0 +1,13 @@
+FROM maven:3.5-jdk-8-alpine as build
+WORKDIR /app
+COPY spring-boot-cloud-eureka-server /app/spring-boot-cloud-eureka-server
+COPY spring-boot-cloud-eureka-account-service /app/spring-boot-cloud-eureka-account-service-api
+COPY spring-boot-cloud-zuul-routing /app/spring-boot-cloud-zuul-routing
+
+RUN mvn -f /app/*/pom.xml clean install
+ 
+FROM openjdk:8-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar /app
+COPY microservice.cmd /app/microservice.cmd
+CMD ["microservice.cmd"]
